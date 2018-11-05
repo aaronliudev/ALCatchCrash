@@ -11,7 +11,17 @@
 #include <libkern/OSAtomic.h>
 
 volatile int32_t UncaughtExceptionCount = 0;
-const int32_t UncaughtExceptionMaximum = 1;   //表示最多只截获10次异常，如果超过十次则不截获弹出alter了直接崩溃
+const int32_t UncaughtExceptionMaximum = 1;   //表示最多只截获1次异常
+
+const NSString *kAL_ExceptionCountKey = @"kAL_ExceptionCountKey";
+
+@interface ALExceptionManager ()
+
+/// 启动 app 时的时间
+@property (nonatomic, assign) NSTimeInterval launchTs;
+@property (nonatomic, assign) NSTimeInterval crashTs;
+
+@end
 
 @implementation ALExceptionManager
 
@@ -22,11 +32,13 @@ const int32_t UncaughtExceptionMaximum = 1;   //表示最多只截获10次异常
         manager = [ALExceptionManager new];
         manager.isSaveCrashLog = YES;
         manager.launchProtectionCount = 2;
+        manager.launchTs = [[NSDate date] timeIntervalSince1970];
     });
     return manager;
 }
 
 + (void)al_saveCrash:(NSString *)exceptionInfo isSignal:(BOOL)isSignal {
+    ///
     if (![ALExceptionManager shareInstance].isSaveCrashLog) {
         return;
     }

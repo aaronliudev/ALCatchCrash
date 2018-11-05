@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E70E58CF217F64C40017FAE4 /* AppDelegate+ALCC.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E58CE217F64C40017FAE4 /* AppDelegate+ALCC.m */; };
 		E70E58D821805AFD0017FAE4 /* ALExceptionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E58D721805AFD0017FAE4 /* ALExceptionManager.m */; };
+		E7A6891A21901DEF00C1C4FE /* ALProtectLaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A6891921901DEF00C1C4FE /* ALProtectLaunch.m */; };
 		E7A8B95D217F60F900857CE0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A8B95C217F60F900857CE0 /* AppDelegate.m */; };
 		E7A8B960217F60F900857CE0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A8B95F217F60F900857CE0 /* ViewController.m */; };
 		E7A8B963217F60F900857CE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7A8B961217F60F900857CE0 /* Main.storyboard */; };
@@ -41,6 +42,8 @@
 		E70E58CE217F64C40017FAE4 /* AppDelegate+ALCC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+ALCC.m"; sourceTree = "<group>"; };
 		E70E58D621805AFD0017FAE4 /* ALExceptionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALExceptionManager.h; sourceTree = "<group>"; };
 		E70E58D721805AFD0017FAE4 /* ALExceptionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALExceptionManager.m; sourceTree = "<group>"; };
+		E7A6891821901DEF00C1C4FE /* ALProtectLaunch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALProtectLaunch.h; sourceTree = "<group>"; };
+		E7A6891921901DEF00C1C4FE /* ALProtectLaunch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALProtectLaunch.m; sourceTree = "<group>"; };
 		E7A8B958217F60F900857CE0 /* ALCatchCrash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALCatchCrash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7A8B95B217F60F900857CE0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7A8B95C217F60F900857CE0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -91,6 +94,8 @@
 				E70E58CE217F64C40017FAE4 /* AppDelegate+ALCC.m */,
 				E70E58D621805AFD0017FAE4 /* ALExceptionManager.h */,
 				E70E58D721805AFD0017FAE4 /* ALExceptionManager.m */,
+				E7A6891821901DEF00C1C4FE /* ALProtectLaunch.h */,
+				E7A6891921901DEF00C1C4FE /* ALProtectLaunch.m */,
 			);
 			path = ALCatchCrash;
 			sourceTree = "<group>";
@@ -281,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7A8B960217F60F900857CE0 /* ViewController.m in Sources */,
+				E7A6891A21901DEF00C1C4FE /* ALProtectLaunch.m in Sources */,
 				E70E58D821805AFD0017FAE4 /* ALExceptionManager.m in Sources */,
 				E7A8B96B217F60FA00857CE0 /* main.m in Sources */,
 				E7A8B95D217F60F900857CE0 /* AppDelegate.m in Sources */,
@@ -454,7 +460,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6DT5R33QWJ;
 				INFOPLIST_FILE = ALCatchCrash/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -470,7 +478,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6DT5R33QWJ;
 				INFOPLIST_FILE = ALCatchCrash/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

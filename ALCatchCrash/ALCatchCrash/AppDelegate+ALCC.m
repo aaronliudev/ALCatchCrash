@@ -8,6 +8,7 @@
 
 #import "AppDelegate+ALCC.h"
 #import <objc/runtime.h>
+#import "ALProtectLaunch.h"
 
 @implementation AppDelegate (ALCC)
 
@@ -19,25 +20,86 @@
 }
 
 + (void)exchangeMethod {
-    Class class = [self class];
+    Class class = [super class];
     
-    SEL originalSEL = @selector(application:didFinishLaunchingWithOptions:);
-    SEL swizzledSEL = @selector(swizzled_application:didFinishLaunchingWithOptions:);
+    // When swizzling a class method, use the following:
+    // Class class = object_getClass((id)self);
     
-    Method originalM = class_getClassMethod(class, originalSEL);
-    Method swizzledM = class_getClassMethod(class, swizzledSEL);
+    SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
+    SEL swizzledSelector = @selector(swizzled_application:didFinishLaunchingWithOptions:);
     
-    BOOL isAddMethod = class_addMethod(class, originalSEL, method_getImplementation(swizzledM), method_getTypeEncoding(swizzledM));
-    if (isAddMethod) {
-        class_replaceMethod(class, swizzledSEL, method_getImplementation(originalM), method_getTypeEncoding(originalM));
-    }
-    else {
-        method_exchangeImplementations(originalM, swizzledM);
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    BOOL didAddMethod =
+    class_addMethod(class,
+                    originalSelector,
+                    method_getImplementation(swizzledMethod),
+                    method_getTypeEncoding(swizzledMethod));
+    
+    if (didAddMethod) {
+        class_replaceMethod(class,
+                            swizzledSelector,
+                            method_getImplementation(originalMethod),
+                            method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
     }
 }
 
-+ (void)swizzled_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)swizzled_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //
     
+    //
+    if (launchOptions != nil) {
+        [self swizzled_application:application didFinishLaunchingWithOptions:launchOptions];
+    }
+    
+    [ALProtectLaunch setRepairBlock:^(ALRepairedCompletionBlock completion) {
+        [self showAlertForNeedFixCrashOnCompletion:completion];
+    }];
+    [ALProtectLaunch setCompletionBlock:^BOOL{
+        return [self swizzled_application:application didFinishLaunchingWithOptions:launchOptions];
+    }];
+    return [ALProtectLaunch launchCrashProtect];
+}
+
+- (void)showAlertForNeedFixCrashOnCompletion:(ALRepairedCompletionBlock)completion {
+    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:nil message:@"监测到应用可能已损坏，是否尝试修复？" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        if (completion) {
+            completion();
+        }
+    }];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self tryToFixCrash:completion];
+    }] ;
+    [alertVc addAction:cancelAction];
+    [alertVc addAction:okAction];
+    [self presentAlertVc:alertVc];
+    
+    
+}
+
+- (void)tryToFixCrash:(ALRepairedCompletionBlock)completion {
+    // 解决crash，删除没用的目录文件等缓存
+    
+    if (completion) {
+        completion();
+    }
+}
+
+- (void)presentAlertVc:(UIViewController *)vc {
+    if (!self.window) {
+        self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.window.backgroundColor = [UIColor whiteColor];
+        self.window.rootViewController = [UIViewController new];
+//        self.window.rootViewController.view.backgroundColor = [UIColor whiteColor];
+    }
+//    [self.window makeKeyWindow];
+    [self.window makeKeyAndVisible];
+    [self.window.rootViewController presentViewController:vc animated:YES completion:nil];
 }
 
 @end
