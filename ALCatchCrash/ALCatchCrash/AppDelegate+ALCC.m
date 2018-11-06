@@ -8,6 +8,7 @@
 
 #import "AppDelegate+ALCC.h"
 #import <objc/runtime.h>
+#import "ALExceptionManager.h"
 #import "ALProtectLaunch.h"
 
 @implementation AppDelegate (ALCC)
@@ -48,8 +49,9 @@
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //
-    
+    // 启用crash监控
+    InstallUncaughtExceptionHandler();
+    InstallSignalHandler();
     //
     if (launchOptions != nil) {
         [self swizzled_application:application didFinishLaunchingWithOptions:launchOptions];
@@ -78,10 +80,9 @@
     [alertVc addAction:cancelAction];
     [alertVc addAction:okAction];
     [self presentAlertVc:alertVc];
-    
-    
 }
 
+/// 这里进行修复操作，完成之后，调用block
 - (void)tryToFixCrash:(ALRepairedCompletionBlock)completion {
     // 解决crash，删除没用的目录文件等缓存
     
@@ -95,9 +96,7 @@
         self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.window.backgroundColor = [UIColor whiteColor];
         self.window.rootViewController = [UIViewController new];
-//        self.window.rootViewController.view.backgroundColor = [UIColor whiteColor];
     }
-//    [self.window makeKeyWindow];
     [self.window makeKeyAndVisible];
     [self.window.rootViewController presentViewController:vc animated:YES completion:nil];
 }

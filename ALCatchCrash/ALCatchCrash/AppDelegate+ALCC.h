@@ -8,6 +8,11 @@
 
 #import "AppDelegate.h"
 
+/**
+ *  此项目来自于https://github.com/liuslevis/GYBootingProtection.git
+ *
+ **/
+
 @interface AppDelegate (ALCC)
 
 @end

@@ -9,17 +9,12 @@
 #import "ALExceptionManager.h"
 #include <execinfo.h>
 #include <libkern/OSAtomic.h>
+#import "ALProtectLaunch.h"
 
 volatile int32_t UncaughtExceptionCount = 0;
 const int32_t UncaughtExceptionMaximum = 1;   //表示最多只截获1次异常
 
-const NSString *kAL_ExceptionCountKey = @"kAL_ExceptionCountKey";
-
 @interface ALExceptionManager ()
-
-/// 启动 app 时的时间
-@property (nonatomic, assign) NSTimeInterval launchTs;
-@property (nonatomic, assign) NSTimeInterval crashTs;
 
 @end
 
@@ -32,12 +27,18 @@ const NSString *kAL_ExceptionCountKey = @"kAL_ExceptionCountKey";
         manager = [ALExceptionManager new];
         manager.isSaveCrashLog = YES;
         manager.launchProtectionCount = 2;
-        manager.launchTs = [[NSDate date] timeIntervalSince1970];
     });
     return manager;
 }
 
 + (void)al_saveCrash:(NSString *)exceptionInfo isSignal:(BOOL)isSignal {
+    // save crash count
+    if ([ALProtectLaunch canSaveCrashCount]) {
+        [ALProtectLaunch saveCrashCount:[ALProtectLaunch crashCount] + 1];
+    }
+    else {
+        [ALProtectLaunch saveCrashCount:0];
+    }
     ///
     if (![ALExceptionManager shareInstance].isSaveCrashLog) {
         return;
@@ -100,11 +101,13 @@ void SignalException(int signal) {
     for (i = 0; i <frames; ++i) {
         [mstr appendFormat:@"%s\n", strs[i]];
     }
+    
     // save
     [ALExceptionManager al_saveCrash:mstr isSignal:YES];
 }
 
 void InstallSignalHandler(void) {
+    // 这种crash在debug情况下是无法截获的，debug到手机上之后，直接点击app运行可以获取到crash log
     signal(SIGHUP, SignalException);
     signal(SIGINT, SignalException);
     signal(SIGQUIT, SignalException);
